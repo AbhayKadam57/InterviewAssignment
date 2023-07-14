@@ -54,7 +54,7 @@ const Navbar = () => {
     <Container>
       {pathname === "/dashboard" && (
         <Details>
-          <Message>Welcome, User</Message>
+          <Message>Welcome, {user.username}</Message>
           <LogoutBtn onClick={() => HandleLogout()}>Logout</LogoutBtn>
         </Details>
       )}

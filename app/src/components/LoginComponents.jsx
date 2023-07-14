@@ -72,6 +72,10 @@ const LoginComponents = () => {
     let data = { username, password };
 
     Loginuser(dispatch, data);
+
+    SetUsername("");
+
+    setPassword("");
   };
 
   return (

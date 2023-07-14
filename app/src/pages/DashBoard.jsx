@@ -84,6 +84,7 @@ const Top = styled.div`
   width: 80%;
   padding: 1em;
   border-bottom: 2px solid black;
+  ${Tablet({ borderBottom: "none" })}
 `;
 
 const NoteList = styled.div`
@@ -122,42 +123,54 @@ const Time = styled.p`
 const DashBoard = () => {
   const { user } = useSelector((state) => state.user);
 
-  console.log(user?.notes);
-
-  const [noteList, SetNoteList] = useState(user?.notes || []);
+  const [noteList, SetNoteList] = useState([]);
 
   const [note, setNote] = useState("");
 
-  const handleAddNote = async (note) => {
-    SetNoteList((prev) => [...prev, { task: note, createdAt: new Date() }]);
-  };
-
   useEffect(() => {
-    let isSubsribe = true;
-
-    const setList = async () => {
-      try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/users/addnote/${user?._id}`,
-          {
-            task: noteList[noteList.length - 1]?.task,
-            createdAt: noteList[noteList.length - 1]?.createdAt,
+    const fetchAllNotes = async () => {
+      const result = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/users/getnotes/${user._id}`,
+        {
+          headers: {
+            token: `Bearer ${user?.token}`,
           },
-          { headers: { token: `Bearer ${user?.token}` } }
-        );
-      } catch (e) {
-        console.log(e);
-      }
+        }
+      );
+
+      SetNoteList(result?.data);
     };
 
-    if (isSubsribe) {
-      setList();
+    fetchAllNotes();
+  }, []);
+
+  const handleAddNote = async () => {
+    let isPresent = noteList.some((n) => n.task === note);
+
+    if (note === "") {
+      return alert("Please add some message");
     }
 
-    return () => {
-      isSubsribe = false;
-    };
-  }, [noteList, user?._id]);
+    if (isPresent) {
+      return alert("Note is already exists...");
+    }
+
+    const result = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/users/addnote/${user._id}`,
+      { task: note, createdAt: new Date() },
+      {
+        headers: {
+          token: `Bearer ${user?.token}`,
+        },
+      }
+    );
+
+    SetNoteList([...noteList, result.data]);
+
+    if (result.status === 200) {
+      setNote("");
+    }
+  };
 
   return (
     <Container>
@@ -179,9 +192,16 @@ const DashBoard = () => {
           </Top>
           <NoteList>
             {noteList.map((note, id) => (
-              <Note>
+              <Note key={id}>
                 <p>{note.task}</p>
-                <Time>10 min</Time>
+                <Time>
+                  {new Date(
+                    new Date().getTime() -
+                      new Date(note.createdAt).getTime() +
+                      5.5 * 60 * 60 * 1000
+                  ).getMinutes()}
+                  min
+                </Time>
               </Note>
             ))}
           </NoteList>

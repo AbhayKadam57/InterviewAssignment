@@ -16,6 +16,7 @@ const UserSlice = createSlice({
       state.isLoading = false;
       state.user = action.payload;
       state.error = false;
+      state.errorMessage = [];
     },
     RegisterUserFailed: (state, action) => {
       state.isLoading = false;
@@ -29,6 +30,7 @@ const UserSlice = createSlice({
       state.isLoading = false;
       state.error = true;
       state.user = action.payload;
+      state.errorMessage = [];
     },
     LoginUserFailed: (state, action) => {
       state.isLoading = false;

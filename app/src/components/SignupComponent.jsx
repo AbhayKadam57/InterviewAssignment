@@ -74,6 +74,12 @@ const SignupComponent = () => {
     let data = { username, email, password };
 
     RegisterUser(dispatch, data);
+
+    SetUsername("");
+
+    setEmail("");
+
+    setPassword("");
   };
 
   return (

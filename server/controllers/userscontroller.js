@@ -89,15 +89,13 @@ export const AddNote = async (req, res) => {
       }
     );
 
-    res.status(200).send("Message added successfully");
+    res.status(200).send({ task: task, createdAt: createdAt });
   } catch (e) {
     res.status(200).send("Message added successfully");
   }
 };
 
 export const GetAllNotes = async (req, res) => {
-  console.log(req.params.id);
-
   const id = req.params.id;
   try {
     const result = await User.findOne({ _id: id }, { notes: 1, _id: 0 });
