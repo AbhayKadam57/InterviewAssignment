@@ -15,9 +15,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 
-// app.get("/", (req, res) => {
-//   res.send("Welcome to Notes API");
-// });
+app.get("/", (req, res) => {
+  res.send("Welcome to Notes API");
+});
 
 app.use("/api/users", UserRoutes);
 
